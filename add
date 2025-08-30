@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pronocludix – Pronostics Sportifs</title>
+  <meta name="description" content="Pronocludix : suivez vos pronostics sportifs, calculez vos mises et vos résultats.">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="container">
+    <h1>⚽ Pronocludix</h1>
+    <p class="tagline">Vos pronostics, vos stats, votre edge.</p>
+    <nav>
+      <a href="#tickets">Mes tickets</a>
+      <a href="#matchs">Matchs</a>
+      <a href="#bankroll">Bankroll</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="tickets">
+      <h2>🎟️ Mes tickets</h2>
+      <form id="ticket-form" class="card">
+        <div class="grid">
+          <label>Événement <input type="text" name="event" placeholder="PSG vs Marseille" required></label>
+          <label>Marché <input type="text" name="market" placeholder="1X2, BTTS, Over/Under" required></label>
+          <label>Cote <input type="number" step="0.01" min="1.01" name="odds" placeholder="1.85" required></label>
+          <label>Mise (€) <input type="number" step="0.01" min="0" name="stake" placeholder="10" required></label>
+        </div>
+        <button type="submit">Ajouter</button>
+      </form>
+
+      <table id="tickets-table" class="table card">
+        <thead>
+          <tr>
+            <th>Événement</th>
+            <th>Marché</th>
+            <th>Cote</th>
+            <th>Mise (€)</th>
+            <th>Gain potentiel (€)</th>
+            <th>Statut</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Rempli par JS -->
+        </tbody>
+      </table>
+    </section>
+
+    <section id="matchs">
+      <h2>📅 Prochains matchs (exemple)</h2>
+      <ul class="list card" id="upcoming">
+        <li><strong>Dynamo Kiev</strong> vs <strong>Maccabi</strong> – Sam 31/08 – 20:45</li>
+        <li><strong>Célje</strong> vs <strong>Maribor</strong> – Dim 01/09 – 18:30</li>
+        <li><strong>Lens</strong> vs <strong>Lorient</strong> – Dim 01/09 – 21:00</li>
+      </ul>
+      <p class="muted">⚠️ Exemple statique — à remplacer par une API plus tard.</p>
+    </section>
+
+    <section id="bankroll">
+      <h2>💰 Bankroll</h2>
+      <div class="card grid">
+        <label>Bankroll initiale (€) <input type="number" id="bankroll-start" value="100" min="0" step="0.01"></label>
+        <label>Mise recommandée (%) <input type="number" id="stake-pct" value="2" min="0" step="0.1"></label>
+        <button id="calc-stake">Calculer mise</button>
+      </div>
+      <p id="stake-output" class="muted"></p>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p>© <span id="year"></span> Pronocludix — Propulsé par GitHub Pages.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
