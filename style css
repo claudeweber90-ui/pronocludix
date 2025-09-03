@@ -1,3 +1,57 @@
+/* === Header avec logo + menu === */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding-top:24px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+  color:var(--text);
+}
+
+.brand-logo{
+  height:48px;
+  width:auto;
+  border-radius:12px;
+}
+
+.brand span{
+  font-size:28px;
+  font-weight:700;
+  letter-spacing:0.5px;
+}
+
+.main-nav{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.main-nav a{
+  color:var(--text);
+  text-decoration:none;
+  padding:8px 12px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  transition:transform .12s ease, border-color .12s ease;
+}
+
+.main-nav a:hover{
+  border-color:var(--accent);
+  transform:translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width:600px){
+  .header{flex-direction:column; align-items:flex-start;}
+  .brand span{font-size:24px;}
+}
 * {
   box-sizing: border-box;
 }
