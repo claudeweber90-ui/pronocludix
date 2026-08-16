@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lucarne — pronostics football éclairés</title>
+<meta name="description" content="Probabilités sans marge, indice de confiance et détecteur de valeur sur la Ligue 1, la Premier League, la Liga, la Serie A, la Bundesliga et la Ligue des Champions." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2314161B'/%3E%3Cpath d='M7 22V8h13' stroke='%23C7F04A' stroke-width='3' fill='none' stroke-linecap='square'/%3E%3Ccircle cx='19' cy='19' r='4.5' fill='%23FF5B3E'/%3E%3C/svg%3E" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700,900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<a class="skip" href="#contenu">Aller au contenu</a>
+
+<header class="topbar">
+  <div class="wrap topbar__in">
+    <a class="brand" href="#top" aria-label="Lucarne, accueil">
+      <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true" fill="none">
+        <path d="M6 23V7h14" stroke="currentColor" stroke-width="3" stroke-linecap="square"/>
+        <path d="M6 23h9M11 7v11" stroke="currentColor" stroke-width="1.2" opacity=".45"/>
+        <circle cx="21" cy="20" r="5" fill="var(--coral)"/>
+      </svg>
+      <span class="brand__word">Lucarne</span>
+      <span class="brand__tag">pronos éclairés</span>
+    </a>
+    <nav class="topnav" aria-label="Navigation principale">
+      <a href="#matchs">Matchs</a>
+      <a href="#combine">Combiné</a>
+      <a href="#duel">Duel</a>
+      <a href="#methode">Méthode</a>
+    </nav>
+    <p class="freshness" id="freshness"><span class="dot"></span><span id="freshText">chargement…</span></p>
+  </div>
+</header>
+
+<main id="contenu">
+
+  <!-- ───────────── HERO ───────────── -->
+  <section class="hero" id="top">
+    <div class="wrap hero__in">
+      <div class="hero__text">
+        <p class="eyebrow">Six compétitions · <span id="heroCount">—</span> matchs décortiqués</p>
+        <h1>Le marché parle.<br><em>On enlève la marge</em><br>et on traduit.</h1>
+        <p class="lede">
+          Chaque match est passé au tamis&nbsp;: on prend les cotes de cinq opérateurs, on retire la
+          marge du bookmaker, on garde la ligne la plus affûtée du marché — et on obtient de vraies
+          probabilités. Pas d'intuition, pas de «&nbsp;feeling&nbsp;», juste ce que la foule des parieurs
+          pense vraiment, rendu lisible.
+        </p>
+        <div class="hero__cta">
+          <a class="btn btn--solid" href="#matchs">Voir les pronostics</a>
+          <a class="btn btn--ghost" href="#methode">Comment ça marche</a>
+        </div>
+      </div>
+      <aside class="hero__panel" id="heroPanel" aria-label="Affiche du moment"></aside>
+    </div>
+    <div class="wrap">
+      <ul class="ticker" id="ticker" aria-label="Chiffres clés"></ul>
+    </div>
+  </section>
+
+  <!-- ───────────── PODIUM ───────────── -->
+  <section class="strip" id="podium">
+    <div class="wrap">
+      <div class="sect-head">
+        <h2>Les trois humeurs de la semaine</h2>
+        <p>Le pari le plus verrouillé, la meilleure cote face à sa vraie probabilité, et le match où personne n'ose se mouiller.</p>
+      </div>
+      <div class="podium" id="podiumGrid"></div>
+    </div>
+  </section>
+
+  <!-- ───────────── MATCHS ───────────── -->
+  <section class="section" id="matchs">
+    <div class="wrap">
+      <div class="sect-head sect-head--row">
+        <div>
+          <h2>Tous les matchs</h2>
+          <p>Barres de probabilité sans marge, jauge de confiance et alerte valeur. Cliquez une carte pour ouvrir la fiche complète.</p>
+        </div>
+      </div>
+
+      <div class="filters" role="group" aria-label="Filtres">
+        <div class="chiprow" id="leagueFilter" role="group" aria-label="Compétition"></div>
+        <div class="filters__end">
+          <label class="field">
+            <span>Trier</span>
+            <select id="sortSel">
+              <option value="date">Par coup d'envoi</option>
+              <option value="conf">Confiance décroissante</option>
+              <option value="chaos">Indice de surprise</option>
+              <option value="edge">Valeur détectée</option>
+            </select>
+          </label>
+          <label class="field field--search">
+            <span>Chercher</span>
+            <input id="search" type="search" placeholder="Une équipe…" autocomplete="off" />
+          </label>
+        </div>
+      </div>
+
+      <p class="result-count" id="resultCount" aria-live="polite"></p>
+      <div class="grid" id="matchGrid"></div>
+      <p class="empty" id="emptyState" hidden>Aucun match ne correspond. Essayez un autre filtre.</p>
+    </div>
+  </section>
+
+  <!-- ───────────── COMBINÉ ───────────── -->
+  <section class="section section--dark" id="combine">
+    <div class="wrap combo">
+      <div class="combo__intro">
+        <h2>L'atelier combiné</h2>
+        <p>
+          Ajoutez des sélections et voyez immédiatement ce que ça donne&nbsp;: la probabilité réelle
+          que tout passe, la cote que le marché vous offre, et si le jeu en vaut la chandelle.
+          Spoiler&nbsp;: chaque nouvelle jambe divise vos chances.
+        </p>
+        <div class="combo__hint" id="comboHint">Cliquez sur <strong>+ Combiné</strong> sur une carte de match.</div>
+      </div>
+      <div class="combo__panel">
+        <ul class="legs" id="comboLegs"></ul>
+        <div class="combo__totals" id="comboTotals"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────── DUEL ───────────── -->
+  <section class="section" id="duel">
+    <div class="wrap">
+      <div class="sect-head">
+        <h2>Duel contre le modèle</h2>
+        <p>Un match, trois issues, aucune cote affichée. Vous parlez d'abord, le marché répond ensuite. Votre score est calculé au score de Brier — plus vous êtes proche de la vérité probabiliste, plus vous marquez.</p>
+      </div>
+      <div class="duel" id="duelBox"></div>
+    </div>
+  </section>
+
+  <!-- ───────────── MÉTHODE ───────────── -->
+  <section class="section section--paper" id="methode">
+    <div class="wrap method">
+      <div class="method__lead">
+        <h2>La méthode, sans jargon</h2>
+        <p>Quatre étapes, zéro boule de cristal.</p>
+      </div>
+      <ol class="steps">
+        <li>
+          <span class="steps__n">01</span>
+          <h3>On collecte</h3>
+          <p>Pour chaque affiche, les cotes 1&nbsp;N&nbsp;2, le total de buts et le «&nbsp;les deux équipes marquent&nbsp;» sont relevés chez cinq opérateurs américains&nbsp;: Pinnacle, DraftKings, FanDuel, BetMGM et Caesars.</p>
+        </li>
+        <li>
+          <span class="steps__n">02</span>
+          <h3>On retire la marge</h3>
+          <p>Une cote contient toujours la commission du bookmaker. En additionnant les probabilités implicites des trois issues, on tombe au-dessus de 100&nbsp;%&nbsp;: ce surplus, c'est la marge. On la répartit proportionnellement pour revenir à 100&nbsp;% et obtenir la probabilité honnête.</p>
+        </li>
+        <li>
+          <span class="steps__n">03</span>
+          <h3>On prend la ligne la plus sérieuse</h3>
+          <p>Quand Pinnacle cote un match, on l'utilise comme référence&nbsp;: c'est l'opérateur à faible marge dont les prix bougent le plus vite sur l'argent intelligent. Sinon, on prend la médiane du marché, plus robuste qu'une moyenne face à un prix aberrant.</p>
+        </li>
+        <li>
+          <span class="steps__n">04</span>
+          <h3>On traduit en langage humain</h3>
+          <p>Confiance&nbsp;: à quel point le favori domine, corrigé du désaccord entre opérateurs. Surprise&nbsp;: à quel point l'issue est ouverte. Valeur&nbsp;: quand la meilleure cote disponible dépasse la probabilité honnête, l'écart est affiché en pourcentage.</p>
+        </li>
+      </ol>
+      <div class="method__note">
+        <h3>Ce que ce site n'est pas</h3>
+        <p>
+          Ce n'est pas une machine à gagner. Les probabilités affichées sont celles du marché, pas la vérité&nbsp;:
+          un favori à 80&nbsp;% perd une fois sur cinq, et ces cinq fois-là arrivent parfois d'affilée. Les prix
+          proviennent d'opérateurs américains et servent de référence analytique&nbsp;; ils peuvent différer
+          de ceux que vous voyez ailleurs.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <div>
+      <p class="foot__brand">Lucarne</p>
+      <p class="foot__meta" id="footMeta"></p>
+    </div>
+    <p class="foot__warn">
+      Les paris comportent des risques&nbsp;: endettement, isolement, dépendance.
+      Contenu réservé aux personnes majeures. Rien ici n'est un conseil financier ni une incitation à jouer.
+    </p>
+  </div>
+</footer>
+
+<!-- Fiche match -->
+<div class="sheet" id="sheet" hidden>
+  <div class="sheet__scrim" data-close></div>
+  <div class="sheet__panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <button class="sheet__x" data-close aria-label="Fermer la fiche">&times;</button>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+
+<script src="app.js" defer></script>
+<script data-pplx-inline-edit>
+(function () {
+  if (window === window.top) return;
+
+  const allowedParentOrigins = ["https://www.perplexity.ai","https://perplexity.ai","https://testing.perplexity.ai","https://staging.perplexity.ai","https://*.preview.i.perplexity.ai","http://perplexity.localhost","http://localhost:1420","http://127.0.0.1:1420","http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173","http://127.0.0.1:5173"];
+  const MAX_FONT_BYTES = 500 * 1024;
+  const MAX_TOTAL_FONT_BYTES = 2 * 1024 * 1024;
+  let scrollForwarding = false;
+  let scrollRaf = 0;
+  let trustedTopOrigin = null;
+
+  // Allow entries like "https://*.preview.i.perplexity.ai" — the wildcard
+  // matches a single DNS label (no dots), so "https://*.foo" cannot stretch
+  // across multiple labels.
+  function matchesAllowedOrigin(origin) {
+    if (!origin) return false;
+    for (const entry of allowedParentOrigins) {
+      if (!entry.includes("*")) {
+        if (entry === origin) return true;
+        continue;
+      }
+      const pattern = new RegExp(
+        "^" +
+          entry.replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, "[^.]+") +
+          "$",
+      );
+      if (pattern.test(origin)) return true;
+    }
+    return false;
+  }
+
+  // Trust decision: when the sender is same-origin-visible (event.origin is a
+  // real origin like https://www.perplexity.ai) we trust event.origin directly.
+  // When event.origin is "null" (opaque broker srcdoc), we fall back to the
+  // broker's stamped `parentOrigin` to identify the top window. The fallback
+  // is claim-only — we rely on the browser's native `targetOrigin` enforcement
+  // on the response path (see postToTrustedTop) to ensure replies can't be
+  // delivered to anyone but the actual top window of that claimed origin.
+  function getTrustedParentOrigin(event) {
+    const forwardedParentOrigin =
+      typeof event.data.parentOrigin === "string" ? event.data.parentOrigin : null;
+    const parentOrigin = event.origin === "null" ? forwardedParentOrigin : event.origin;
+    return matchesAllowedOrigin(parentOrigin) ? parentOrigin : null;
+  }
+
+  // All responses go to window.top with targetOrigin = the allowlisted origin.
+  // An attacker that iframes us inside their own null-origin broker can claim
+  // any parentOrigin they like, but the browser will drop the reply whenever
+  // the real top's origin doesn't match — so the screenshot never leaves.
+  function postToTrustedTop(message) {
+    if (!trustedTopOrigin) return;
+    try {
+      window.top.postMessage(message, trustedTopOrigin);
+    } catch (_error) {}
+  }
+
+  function inlineAll(original, clone) {
+    if (original.nodeType !== 1 || clone.nodeType !== 1) return;
+
+    try {
+      const computedStyle = getComputedStyle(original);
+      // cssText on a computed style is the serialized declaration in modern
+      // Chromium/Safari — a single read beats enumerating ~400 longhand
+      // properties. Firefox returns "" here, so we fall back on empty.
+      const serialized = computedStyle.cssText;
+      if (serialized) {
+        clone.style.cssText = serialized;
+      } else {
+        const parts = new Array(computedStyle.length);
+        for (let index = 0; index < computedStyle.length; index += 1) {
+          const property = computedStyle[index];
+          parts[index] = `${property}:${computedStyle.getPropertyValue(property)};`;
+        }
+        clone.style.cssText = parts.join("");
+      }
+    } catch (_error) {}
+
+    const originalChildren = original.children;
+    const clonedChildren = clone.children;
+    for (
+      let index = 0;
+      index < originalChildren.length && index < clonedChildren.length;
+      index += 1
+    ) {
+      inlineAll(originalChildren[index], clonedChildren[index]);
+    }
+  }
+
+  function extractFontUrl(srcValue) {
+    const matches = [
+      ...srcValue.matchAll(
+        /url\(["']?([^"')]+)["']?\)(?:\s*format\(["']?([^"')]+)["']?\))?/gi,
+      ),
+    ];
+    if (matches.length === 0) return null;
+    const woff2 = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff2"));
+    if (woff2) return woff2[1];
+    const woff = matches.find((m) => m[2] && m[2].toLowerCase().includes("woff"));
+    if (woff) return woff[1];
+    return matches[0][1];
+  }
+
+  // Cache resolved font URL -> data URI across captures. Fonts on a page
+  // essentially never change, and a batch run emits multiple captures back to
+  // back — without this we'd refetch + re-base64 every time.
+  const fontDataUriCache = new Map();
+  const SRC_DECLARATION_RE = /src\s*:\s*[^;}]+/i;
+
+  async function fetchAsDataUri(url) {
+    if (fontDataUriCache.has(url)) return fontDataUriCache.get(url);
+    let dataUri = null;
+    try {
+      const response = await fetch(url, { mode: "cors", credentials: "omit" });
+      if (response.ok) {
+        const blob = await response.blob();
+        if (blob.size <= MAX_FONT_BYTES) {
+          dataUri = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () =>
+              resolve(typeof reader.result === "string" ? reader.result : null);
+            reader.onerror = () => resolve(null);
+            reader.readAsDataURL(blob);
+          });
+        }
+      }
+    } catch (_error) {
+      dataUri = null;
+    }
+    fontDataUriCache.set(url, dataUri);
+    return dataUri;
+  }
+
+  function collectFontFaceRuleTexts() {
+    const rules = [];
+    for (const sheet of document.styleSheets) {
+      let cssRules;
+      try {
+        cssRules = sheet.cssRules;
+      } catch (_error) {
+        continue;
+      }
+      if (!cssRules) continue;
+      for (const rule of cssRules) {
+        const cssText = rule.cssText || "";
+        if (cssText.startsWith("@font-face")) rules.push(cssText);
+      }
+    }
+    return rules;
+  }
+
+  async function buildInlinedFontCss() {
+    const ruleTexts = collectFontFaceRuleTexts();
+    if (ruleTexts.length === 0) return null;
+
+    const resolved = ruleTexts.map((cssText) => {
+      if (!SRC_DECLARATION_RE.test(cssText)) return null;
+      const srcMatch = cssText.match(/src\s*:\s*([^;}]+)[;}]/i);
+      if (!srcMatch) return null;
+      const url = extractFontUrl(srcMatch[1]);
+      if (!url) return null;
+      try {
+        return { cssText, url: new URL(url, document.baseURI).href };
+      } catch (_error) {
+        return null;
+      }
+    });
+
+    const dataUris = await Promise.all(
+      resolved.map((entry) => (entry ? fetchAsDataUri(entry.url) : Promise.resolve(null))),
+    );
+
+    const inlined = [];
+    let totalBytes = 0;
+    for (let index = 0; index < resolved.length; index += 1) {
+      const entry = resolved[index];
+      const dataUri = dataUris[index];
+      if (!entry || !dataUri) continue;
+      const approxBytes = dataUri.length * 0.75;
+      if (totalBytes + approxBytes > MAX_TOTAL_FONT_BYTES) break;
+      totalBytes += approxBytes;
+      inlined.push(entry.cssText.replace(SRC_DECLARATION_RE, `src: url("${dataUri}")`));
+    }
+    return inlined.length > 0 ? inlined.join("\n") : null;
+  }
+
+  function stripExternal(clone) {
+    const images = clone.querySelectorAll("img");
+    for (let index = 0; index < images.length; index += 1) {
+      const src = images[index].getAttribute("src");
+      if (src && !src.startsWith("data:")) images[index].removeAttribute("src");
+    }
+
+    const elements = clone.querySelectorAll("*");
+    for (let index = 0; index < elements.length; index += 1) {
+      const style = elements[index].style.cssText;
+      if (style && style.includes("url(")) {
+        elements[index].style.cssText = style.replace(
+          /url\(["']?(?!data:)[^)"']*["']?\)/gi,
+          "none",
+        );
+      }
+    }
+  }
+
+  function emitScroll() {
+    scrollRaf = 0;
+    if (!scrollForwarding) return;
+    postToTrustedTop({
+      type: "INLINE_EDIT_SCROLL",
+      scrollX: window.scrollX,
+      scrollY: window.scrollY,
+    });
+  }
+
+  window.addEventListener(
+    "scroll",
+    function () {
+      if (!scrollForwarding || scrollRaf) return;
+      scrollRaf = requestAnimationFrame(emitScroll);
+    },
+    { passive: true, capture: true },
+  );
+
+  async function handleCaptureRequest(event) {
+    const requestId = event.data.requestId;
+    const scrollX = window.scrollX;
+    const scrollY = window.scrollY;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    function postResult(dataUrl) {
+      postToTrustedTop({
+        type: "INLINE_EDIT_SCREENSHOT_RESULT",
+        requestId,
+        dataUrl,
+        scrollX,
+        scrollY,
+      });
+    }
+
+    try {
+      // Wait for any pending web fonts to resolve so both inline metrics and
+      // the @font-face inlining below see the same loaded faces.
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (_error) {}
+      }
+
+      const clone = document.documentElement.cloneNode(true);
+      inlineAll(document.documentElement, clone);
+
+      const removedNodes = clone.querySelectorAll("script,link[rel=\"stylesheet\"],style");
+      for (let index = 0; index < removedNodes.length; index += 1) {
+        removedNodes[index].remove();
+      }
+
+      stripExternal(clone);
+
+      // Re-embed web fonts as data-URI @font-face rules so the SVG rasterizer
+      // can resolve them — external font URLs aren't fetched during
+      // foreignObject rendering, which would otherwise force a fallback face
+      // and change text metrics.
+      const inlinedFontCss = await buildInlinedFontCss();
+      if (inlinedFontCss) {
+        const styleEl = document.createElement("style");
+        styleEl.textContent = inlinedFontCss;
+        const head = clone.querySelector("head");
+        if (head) head.appendChild(styleEl);
+        else clone.insertBefore(styleEl, clone.firstChild);
+      }
+
+      const html = new XMLSerializer().serializeToString(clone);
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">` +
+        '<foreignObject width="100%" height="100%">' +
+        `<div xmlns="http://www.w3.org/1999/xhtml" style="width:${width}px;height:${height}px;overflow:hidden">` +
+        `<div style="position:relative;left:-${scrollX}px;top:-${scrollY}px">` +
+        html +
+        "</div></div></foreignObject></svg>";
+      const svgUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      const image = new Image();
+      image.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        postResult(canvas.toDataURL("image/png"));
+      };
+      image.onerror = function () {
+        postResult(null);
+      };
+      image.src = svgUrl;
+    } catch (_error) {
+      postResult(null);
+    }
+  }
+
+  window.addEventListener("message", function (event) {
+    if (!event.data) return;
+    // Only accept messages from the direct parent frame. Blocks sibling /
+    // unrelated-window postMessage senders that could otherwise reach us.
+    if (event.source !== window.parent) return;
+
+    const trustedParentOrigin = getTrustedParentOrigin(event);
+    if (!trustedParentOrigin) return;
+    trustedTopOrigin = trustedParentOrigin;
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_START") {
+      scrollForwarding = true;
+      emitScroll();
+      return;
+    }
+
+    if (event.data.type === "INLINE_EDIT_SCROLL_STOP") {
+      scrollForwarding = false;
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      scrollRaf = 0;
+      return;
+    }
+
+    if (event.data.type !== "INLINE_EDIT_CAPTURE_REQUEST") return;
+
+    handleCaptureRequest(event);
+  });
+})();
+
+
+</script></body>
+</html>
