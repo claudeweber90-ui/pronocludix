@@ -29,13 +29,26 @@ init();
 
 async function init() {
   try {
-    const res = await fetch('pronos.json');
+    const res = await fetch('data/pronos.json');
     state.data = await res.json();
   } catch (e) {
     $('#matchGrid').innerHTML = '<p class="empty">Impossible de charger les données.</p>';
     return;
   }
   const d = state.data;
+
+  // Lucarne : ne jamais afficher des matchs déjà terminés.
+  // Si les données n'ont pas encore été renouvelées, on masque l'ancien lot
+  // et on affiche la sélection éditoriale courante.
+  injectCurrentPronos();
+
+  const now = new Date();
+  d.matches = d.matches.filter((m) => new Date(m.kickoff) >= now);
+
+  if (!d.matches.length) {
+    showWaitingForFreshData(d);
+    return;
+  }
 
   // fraîcheur
   const t = new Date(d.collectedAt);
@@ -55,6 +68,108 @@ async function init() {
   buildDuel();
   bindSheet();
 }
+
+
+/* ---------------- garde-fou anti-données périmées ---------------- */
+function injectCurrentPronos() {
+  if (document.querySelector('#lucarneCurrentPicks')) return;
+
+  const section = document.createElement('section');
+  section.className = 'section';
+  section.id = 'lucarneCurrentPicks';
+  section.innerHTML = `
+    <div class="wrap">
+      <div class="sect-head">
+        <h2>🎯 Les pronos Lucarne</h2>
+        <p>Sélections du samedi 5 septembre 2026</p>
+      </div>
+      <div class="podium">
+        <article class="pod pod--a">
+          <p class="pod__tag">PRONO SIMPLE</p>
+          <h3 class="pod__title">Reims gagne contre Guingamp</h3>
+          <p class="pod__why">Sélection prudente du jour.</p>
+          <p class="pod__num">1,77<small>cote indicative</small></p>
+        </article>
+        <article class="pod pod--b">
+          <p class="pod__tag">COMBINÉ</p>
+          <h3 class="pod__title">Reims gagne + Brighton–Leeds : plus de 2,5 buts</h3>
+          <p class="pod__why">Deux sélections, sans multiplier inutilement les jambes.</p>
+          <p class="pod__num">3,19<small>cote indicative</small></p>
+        </article>
+      </div>
+      <p class="mini__s" style="margin-top:1rem">⚠️ Les cotes peuvent évoluer avant le coup d'envoi. Aucun pari n'est garanti.</p>
+    </div>`;
+
+  const combine = document.querySelector('#combine');
+  if (combine) combine.before(section);
+  else (document.querySelector('main') || document.body).appendChild(section);
+}
+
+function showWaitingForFreshData(d) {
+  const freshText = document.querySelector('#freshText');
+  if (freshText) freshText.textContent = 'Les anciennes données ont été masquées';
+
+  const footMeta = document.querySelector('#footMeta');
+  if (footMeta) {
+    footMeta.innerHTML =
+      `Le précédent lot de cotes datait du ${DTF.format(new Date(d.collectedAt))}.<br>` +
+      `Les matchs terminés ne sont plus affichés.`;
+  }
+
+  const heroCount = document.querySelector('#heroCount');
+  if (heroCount) heroCount.textContent = '0';
+
+  const heroPanel = document.querySelector('#heroPanel');
+  if (heroPanel) {
+    heroPanel.innerHTML = `
+      <p class="feat__kicker">Sélection actuelle</p>
+      <p class="feat__teams"><span>Reims</span><span class="vs">CONTRE</span><span>Guingamp</span></p>
+      <p class="feat__verdict">Prono simple · victoire de Reims · cote indicative 1,77</p>
+      <p class="feat__meta">Samedi 5 septembre 2026 · 14h00</p>`;
+  }
+
+  const ticker = document.querySelector('#ticker');
+  if (ticker) {
+    ticker.innerHTML =
+      `<li><b>0</b><span>ancien match affiché</span></li>` +
+      `<li><b>2</b><span>sélections Lucarne actuelles</span></li>`;
+  }
+
+  const podiumGrid = document.querySelector('#podiumGrid');
+  if (podiumGrid) {
+    podiumGrid.innerHTML = `
+      <article class="pod pod--a">
+        <p class="pod__tag">Mise à jour</p>
+        <h3 class="pod__title">Anciennes dates retirées</h3>
+        <p class="pod__why">Les matchs du mois d'août sont terminés et ne sont plus proposés.</p>
+        <p class="pod__num">0<small>match périmé</small></p>
+      </article>`;
+  }
+
+  const leagueFilter = document.querySelector('#leagueFilter');
+  if (leagueFilter) leagueFilter.innerHTML = '';
+
+  const resultCount = document.querySelector('#resultCount');
+  if (resultCount) resultCount.textContent = 'Les matchs périmés ont été masqués.';
+
+  const matchGrid = document.querySelector('#matchGrid');
+  if (matchGrid) {
+    matchGrid.innerHTML =
+      '<p class="empty">Nouvelle grille de matchs en attente de données fraîches. Les pronos Lucarne du 5 septembre sont affichés ci-dessus.</p>';
+  }
+
+  const emptyState = document.querySelector('#emptyState');
+  if (emptyState) emptyState.hidden = true;
+
+  const combine = document.querySelector('#combine');
+  if (combine) combine.hidden = true;
+
+  const duel = document.querySelector('#duel');
+  if (duel) duel.hidden = true;
+
+  bindSheet();
+}
+
 
 /* ---------------- chiffres clés ---------------- */
 function buildTicker() {
