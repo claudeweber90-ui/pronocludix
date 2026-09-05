@@ -87,7 +87,7 @@ function injectCurrentPronos() {
       <div class="podium">
         <article class="pod pod--a">
           <p class="pod__tag">PRONO SIMPLE</p>
-          <h3 class="pod__title">
+          
           <p class="pod__why">Sélection prudente du jour.</p>
           <p class="pod__num">2,40<small>cote indicative</small></p>
         </article>
