@@ -86,15 +86,16 @@ function injectCurrentPronos() {
       <div class="podium">
         <article class="pod pod--a">
           <p class="pod__tag">PRONO SIMPLE</p>
-          <h3 class="pod__title">Reims gagne contre Guingamp</h3>
+          <h3 class="pod__title">
           <p class="pod__why">Sélection prudente du jour.</p>
-          <p class="pod__num">1,77<small>cote indicative</small></p>
+          <p class="pod__num">2,40<small>cote indicative</small></p>
         </article>
         <article class="pod pod--b">
-          <p class="pod__tag">COMBINÉ</p>
-          <h3 class="pod__title">Reims gagne + Brighton–Leeds : plus de 2,5 buts</h3>
+          <p class="pod_4
+ 95_tag">COMBINÉ</p>
+          <h3 class="pod__title"Florian Thauvin buteur + Manchester City gagne sans encaisser</h3>
           <p class="pod__why">Deux sélections, sans multiplier inutilement les jambes.</p>
-          <p class="pod__num">3,19<small>cote indicative</small></p>
+          <p class="pod__num">4,80<small>cote indicative</small></p>
         </article>
       </div>
       <p class="mini__s" style="margin-top:1rem">⚠️ Les cotes peuvent évoluer avant le coup d'envoi. Aucun pari n'est garanti.</p>
