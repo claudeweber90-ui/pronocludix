@@ -30,8 +30,7 @@ init();
 async function init() {
   try {
     const res = await fetch('pronos.json');
-                            pronos.json');
-    state.data = await res.json();
+                                state.data = await res.json();
   } catch (e) {
     $('#matchGrid').innerHTML = '<p class="empty">Impossible de charger les données.</p>';
     return;
