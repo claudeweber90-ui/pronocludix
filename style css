@@ -207,3 +207,29 @@ footer {
   color: var(--muted);
   text-align: center;
 }
+.journal-head h2 {
+  margin: 4px 0 0;
+  font-size: 24px;
+}journal-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}.stat-card strong {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+.stat-card span {
+  font-size: 13px;
+  opacity: .8;
+}
+@media (max-width: 700px) {
+  .journal-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .journal-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
