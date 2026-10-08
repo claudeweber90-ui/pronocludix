@@ -131,7 +131,7 @@ function showWaitingForFreshData(d) {
       <p class="feat__teams"><span>Nantes</span><span class="vs">CONTRE</span><span>Reims</span></p>
       <p class="feat__verdict">Analyse en cours · piste prudente : Reims ou nul (X2)</p>
       <p class="feat__meta">Samedi 10 octobre 2026 · 14h00</p>`;
-  }
+  
       
   }
 
