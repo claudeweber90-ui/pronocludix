@@ -158,7 +158,8 @@ function showWaitingForFreshData(d) {
   const matchGrid = document.querySelector('#matchGrid');
   if (matchGrid) {
     matchGrid.innerHTML =
-      '<p class="empty">Nouvelle grille de matchs en attente de données fraîches. Les pronos Lucarne du 5 septembre sont affichés ci-dessus.</p>';
+      '<p class="empty">J8 de Ligue 2 · du 9 au 12 octobre 2026. À suivre : Sochaux–Boulogne, Nantes–Reims et Saint-Étienne–Rodez. Analyses Lucarne en cours.</p>';
+      
   }
 
   const emptyState = document.querySelector('#emptyState');
