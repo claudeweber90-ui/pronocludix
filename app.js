@@ -81,7 +81,8 @@ function injectCurrentPronos() {
     <div class="wrap">
       <div class="sect-head">
         <h2>🎯 Les pronos Lucarne</h2>
-        <p>Sélections du samedi 5 septembre 2026</p>
+        <p>Sélections de la J8 · du 9 au 12 octobre 2026</p>
+        
       </div>
       <div class="podium">
         <article class="pod pod--a">
@@ -91,12 +92,12 @@ function injectCurrentPronos() {
           <p class="pod__num">2,40<small>cote indicative</small></p>
         </article>
         <article class="pod pod--b">
-          <p class="pod_4
- 95_tag">COMBINÉ</p>
-          <h3 class="pod__title"Florian Thauvin buteur + Manchester City gagne sans encaisser</h3>
-          <p class="pod__why">Deux sélections, sans multiplier inutilement les jambes.</p>
-          <p class="pod__num">4,80<small>cote indicative</small></p>
-        </article>
+        <article class="pod pod--b">
+  <p class="pod__tag">À SURVEILLER</p>
+  <h3 class="pod__title">Sochaux – Boulogne</h3>
+  <p class="pod__why">Analyse en cours · piste prudente : Sochaux ou nul (1X).</p>
+  <p class="pod__num">J8<small>Ligue 2</small></p>  
+        
       </div>
       <p class="mini__s" style="margin-top:1rem">⚠️ Les cotes peuvent évoluer avant le coup d'envoi. Aucun pari n'est garanti.</p>
     </div>`;
