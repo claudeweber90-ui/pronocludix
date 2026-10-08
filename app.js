@@ -92,7 +92,8 @@ function injectCurrentPronos() {
           <p class="pod__num">2,40<small>cote indicative</small></p>
         </article>
         <article class="pod pod--b">
-        <article class="pod pod--b">
+       </article> 
+        
   <p class="pod__tag">À SURVEILLER</p>
   <h3 class="pod__title">Sochaux – Boulogne</h3>
   <p class="pod__why">Analyse en cours · piste prudente : Sochaux ou nul (1X).</p>
