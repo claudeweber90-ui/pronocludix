@@ -1,4 +1,58 @@
+function injectCurrentPronos() {
+  if (document.querySelector('#lucarneCurrentPicks')) return;
 
+  const section = document.createElement('section');
+  section.className = 'section';
+  section.id = 'lucarneCurrentPicks';
+
+  section.innerHTML = `
+    <div class="wrap">
+      <h2>Le point Lucarne</h2>
+      <p>Ligue 2 française — 30 octobre 2026</p>
+      <p><strong>Aucune sélection de pari : nous observons.</strong></p>
+
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-spacing:12px;text-align:left">
+          <thead>
+            <tr>
+              <th>Match</th>
+              <th>Domicile</th>
+              <th>Nul</th>
+              <th>Extérieur</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Laval – Boulogne</td><td>37,2 %</td><td>29,8 %</td><td>33,1 %</td></tr>
+            <tr><td>Rodez – Dunkerque</td><td>46,5 %</td><td>24,8 %</td><td>28,8 %</td></tr>
+            <tr><td>Nantes – Clermont</td><td>63,2 %</td><td>21,4 %</td><td>15,5 %</td></tr>
+            <tr><td>Metz – Pau*</td><td>44,8 %</td><td>26,7 %</td><td>28,4 %</td></tr>
+            <tr><td>Grenoble – Dijon</td><td>29,9 %</td><td>28,4 %</td><td>41,7 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Laval – Boulogne : rencontre équilibrée selon les cotes.</p>
+      <p>Rodez – Dunkerque : avantage Rodez, sans certitude.</p>
+      <p>Nantes – Clermont : Nantes nettement favori du marché.</p>
+      <p>Metz – Pau : avantage Metz, mais le match reste ouvert.</p>
+      <p>Grenoble – Dijon : Dijon favori à l'extérieur, sous les 50 %.</p>
+
+      <p class="mini__s">
+        Source : cotes Winamax communiquées le 30 octobre 2026.
+        Probabilités implicites après retrait proportionnel de la marge.
+        Elles reflètent les cotes, pas une prévision indépendante.
+        Les arrondis peuvent légèrement différer de 100 %.
+        Aucun résultat garanti.
+      </p>
+      <p class="mini__s">
+        *Metz : calcul effectué avec une cote de 2,00, à confirmer.
+      </p>
+    </div>`;
+
+  const combine = document.querySelector('#combine');
+  if (combine) combine.before(section);
+  else (document.querySelector('main') || document.body).appendChild(section);
+}
 /* ============ Lucarne — logique d'affichage ============ */
 
 const state = {
