@@ -619,4 +619,131 @@ function answerDuel(m, k) {
       Votre choix valait ${pct(p[k])} % — ${pts} point${pts > 1 ? 's' : ''}.
     </p>`;
   $('#duelScore').textContent = d.score;
-}
+}/* Matchs du jour — ajout Lucarne */
+(async function lucarneJour() {
+  const zone = 'Europe/Paris';
+  const jour = d => new Intl.DateTimeFormat('sv-SE', {
+    timeZone: zone
+  }).format(d);
+  const heure = d => new Intl.DateTimeFormat('fr-FR', {
+    timeZone: zone, hour: '2-digit', minute: '2-digit'
+  }).format(d);
+
+  if (document.getElementById('lucarneJour')) return;
+
+  const section = document.createElement('section');
+  section.id = 'lucarneJour';
+  section.className = 'section';
+  section.innerHTML = `
+    <div class="wrap">
+      <h2>⚽ Matchs du jour — compétitions couvertes</h2>
+      <p data-date></p>
+      <p>Source : ESPN · Horaires de Paris.
+      La couverture ne comprend pas tous les matchs du monde.</p>
+      <button type="button" class="btn" data-refresh>
+        Actualiser les matchs
+      </button>
+      <p data-info role="status"></p>
+      <div data-matchs></div>
+    </div>`;
+
+  const repere = document.getElementById('matchs');
+  if (repere) repere.before(section);
+  else (document.querySelector('main') || document.body).append(section);
+
+  const bouton = section.querySelector('[data-refresh]');
+  const info = section.querySelector('[data-info]');
+  const liste = section.querySelector('[data-matchs]');
+
+  async function charger() {
+    bouton.disabled = true;
+    liste.replaceChildren();
+    info.textContent = 'Chargement des rencontres…';
+    const maintenant = new Date();
+    const aujourdHui = jour(maintenant);
+    section.querySelector('[data-date]').textContent =
+      new Intl.DateTimeFormat('fr-FR', {
+        timeZone: zone, dateStyle: 'full'
+      }).format(maintenant);
+
+    const borne = ecart => jour(new Date(
+      maintenant.getTime() + ecart * 86400000
+    )).replaceAll('-', '');
+
+    const controle = new AbortController();
+    const delai = setTimeout(() => controle.abort(), 20000);
+
+    try {
+      const url = 'https://site.api.espn.com/apis/site/v2/' +
+        'sports/soccer/all/scoreboard?limit=1000&dates=' +
+        borne(-1) + '-' + borne(1);
+      const reponse = await fetch(url, {
+        signal: controle.signal, cache: 'no-store'
+      });
+      if (!reponse.ok) throw new Error('Source indisponible');
+      const donnees = await reponse.json();
+      if (!Array.isArray(donnees.events)) throw new Error('Données invalides');
+
+      const rencontres = [...new Map(donnees.events.map(
+        match => [match.id, match]
+      )).values()].filter(match =>
+        match.date && jour(new Date(match.date)) === aujourdHui
+      ).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+      const groupes = new Map();
+      for (const match of rencontres) {
+        const competition = match.competitions?.[0];
+        if (!competition) continue;
+        const nom = competition.altGameNote || 'Autres rencontres';
+        if (!groupes.has(nom)) groupes.set(nom, []);
+        groupes.get(nom).push({ match, competition });
+      }
+
+      for (const [nom, matchs] of groupes) {
+        const titre = document.createElement('h3');
+        titre.textContent = nom;
+        liste.append(titre);
+
+        for (const { match, competition } of matchs) {
+          const equipes = competition.competitors || [];
+          const domicile = equipes.find(e => e.homeAway === 'home');
+          const exterieur = equipes.find(e => e.homeAway === 'away');
+          if (!domicile || !exterieur) continue;
+
+          const statut = competition.status || match.status;
+          const etat = statut?.type?.state;
+          const score = etat === 'in' || etat === 'post'
+            ? ` · ${domicile.score ?? '–'} - ${exterieur.score ?? '–'}`
+            : '';
+          const libelle = statut?.type?.completed ? 'Terminé'
+            : etat === 'in' ? 'En cours'
+            : statut?.type?.name === 'STATUS_POSTPONED' ? 'Reporté'
+            : statut?.type?.name === 'STATUS_CANCELED' ? 'Annulé'
+            : statut?.type?.detail || 'À venir';
+
+          const ligne = document.createElement('p');
+          ligne.textContent = `${heure(new Date(match.date))} · ` +
+            `${domicile.team.displayName} – ${exterieur.team.displayName}` +
+            `${score} · ${libelle}`;
+          liste.append(ligne);
+        }
+      }
+
+      info.textContent = rencontres.length
+        ? `${rencontres.length} rencontres reçues · Actualisé à ${heure(new Date())}.`
+        : 'Aucune rencontre renvoyée pour ce jour par la source.';
+      if (donnees.events.length >= 1000) {
+        info.textContent += ' La limite de la source est atteinte : liste potentiellement incomplète.';
+      }
+    } catch (erreur) {
+      info.textContent =
+        'Impossible de charger les matchs. Clique sur Actualiser pour réessayer.';
+    } finally {
+      clearTimeout(delai);
+      bouton.disabled = false;
+    }
+  }
+
+  bouton.addEventListener('click', charger);
+  await charger();
+})();
