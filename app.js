@@ -676,7 +676,8 @@ function answerDuel(m, k) {
     try {
       const url = 'https://site.api.espn.com/apis/site/v2/' +
         'sports/soccer/all/scoreboard?limit=1000&dates=' +
-        borne(-1) + '-' + borne(1);
+        borne(0);
+      
       const reponse = await fetch(url, {
         signal: controle.signal, cache: 'no-store'
       });
